@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: converter-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: converter-service
+  template:
+    metadata:
+      labels:
+        app: converter-service
+    spec:
+      containers:
+      - name: converter-service
+        imagePullPolicy: Never
+        image: converter # This is the image you built in Minikube
+        ports:
+        - containerPort: 8001
+

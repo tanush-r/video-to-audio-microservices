@@ -11,15 +11,22 @@ from fastapi.responses import FileResponse
 # Initialize FastAPI app
 app = FastAPI()
 
+# MongoDB credentials
+username = "admin"
+password = "password"
+
+# MongoDB connection string with credentials
+connection_string = f"mongodb://{username}:{password}@mongodb:27017/"
 
 # Connect to MongoDB (Docker local)
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient(connection_string)
+
 db = client["media_database"]  # Use or create a database
 fs = gridfs.GridFS(db)
 
 # RabiitMQ sender using Pika(One piece reference?)
 connection = pika.BlockingConnection(
-    pika.ConnectionParameters(host='localhost'))
+    pika.ConnectionParameters(host='rabbitmq'))
 channel = connection.channel()
 
 channel.queue_declare(queue='task_queue', durable=True)

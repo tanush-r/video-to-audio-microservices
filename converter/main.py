@@ -4,17 +4,24 @@ from bson.objectid import ObjectId
 import os, sys, pika, gridfs
 from moviepy import *
 
+# MongoDB credentials
+username = "admin"
+password = "password"
+
+# MongoDB connection string with credentials
+connection_string = f"mongodb://{username}:{password}@mongodb:27017/"
+
 # Connect to MongoDB (Docker local)
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient(connection_string)
 db = client["media_database"]  # Use or create a database
 fs = gridfs.GridFS(db)
 
 
 def convert_video_to_audio(file_id):
     file_id = ObjectId(file_id)
-    print(file_id)
     file_data = fs.get(file_id)
     output_path = "temp.mp4"
+    
     with open(output_path, "wb") as output_file:
         output_file.write(file_data.read())
 
@@ -34,7 +41,7 @@ def convert_video_to_audio(file_id):
 
 def main():
     connection = pika.BlockingConnection(
-    pika.ConnectionParameters(host='localhost'))
+    pika.ConnectionParameters(host='rabbitmq'))
     channel = connection.channel()
 
     channel.queue_declare(queue='task_queue', durable=True)
@@ -59,6 +66,7 @@ def main():
 
 
 if __name__ == '__main__':
+    print("Bruh")
     try:
         main()
     except KeyboardInterrupt:

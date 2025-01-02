@@ -7,6 +7,10 @@ WORKDIR /app
 # Copy the requirements file and environment variable file
 COPY requirements.txt ./
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/* 
+
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
